@@ -232,7 +232,8 @@ class Pix2Pix():
         print(f'PSNR Score: {psnr_score}')
         print(f'SSIM Score: {ssim_score}')
         print(f'UIQ Score: {uiq_score}')
-
+        
+        # Write evaluation score to a csv file for comparison
         if os.path.isfile(path_csv):
             with open(path_csv, 'a') as csvfile:
                 score_list = ['RMSE Score', 'PSNR Score', 'SSIM Score', 'UIQ Score']
@@ -305,6 +306,7 @@ class Pix2Pix():
 
             self.train_step(input_image, target, step)
 
+            # Save a checkpoint every 5000 steps
             if (step+1) % 5000 == 0:
                 self.checkpoint.save(file_prefix=self.checkpoint_prefix)
 
@@ -315,6 +317,7 @@ if __name__ == '__main__':
     train_ds = data_loader.load_dataset(path_to_train)
     val_ds = data_loader.load_dataset(path_to_val, trains=False)
 
+    # Define model
     pix2pix_gan = Pix2Pix()
 
     # Model summary
@@ -323,8 +326,8 @@ if __name__ == '__main__':
     print("\n=======Discriminator Model Summary=======\n")
     pix2pix_gan.discriminator.summary()
 
-    # Train
-    pix2pix_gan.train(train_ds, 60000)
+    # Train for 200 epochs
+    pix2pix_gan.train(train_ds, 219200)
 
     # Run validation
     pix2pix_gan.checkpoint.restore(tf.train.latest_checkpoint(path_to_checkpoint))
